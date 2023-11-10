@@ -131,7 +131,7 @@ pub fn init_service_parameters() -> Result<ServiceParameters, BuildError> {
     Ok(service)
 }
 
-pub fn build_cors_config(origin: &str) -> Cors {
+pub fn build_cors_config(_origin: &str) -> Cors {
     let available_methods = vec!["GET", "POST", "PUT", "DELETE", "OPTIONS"];
     let available_headers = vec![header::AUTHORIZATION, header::ACCEPT];
 
@@ -139,6 +139,6 @@ pub fn build_cors_config(origin: &str) -> Cors {
         .allowed_header(header::CONTENT_TYPE)
         .allowed_methods(available_methods)
         .allowed_headers(available_headers)
-        .allowed_origin(origin)
+        .allow_any_origin()
         .max_age(3600)
 }
