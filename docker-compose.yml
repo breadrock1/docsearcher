@@ -1,0 +1,44 @@
+version: '3.7'
+
+services:
+
+  elasticsearch:
+    image: 9cfc54795fd9
+    container_name: elasticsearch2
+    restart: always
+    ports:
+      - 9200:9200
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - ELASTIC_PASSWORD=elastic
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
+  docsearcher:
+    image: platform/docsearcher:1.1.0
+    container_name: docsearcher2
+    restart: always
+    ports:
+      - 9201:9201
+      - 3000:3000
+    depends_on:
+      - elasticsearch
+    environment:
+      - ELASTIC_HOST=https://localhost:9200
+      - ELASTIC_USER=elastic
+      - ELASTIC_PASSWORD=elastic
+      - SEARCHER_ADDRESS=localhost
+      - SEARCHER_PORT=9201
+
+networks:
+  default:
+    driver: overlay
+    attachable: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.0.0/16
